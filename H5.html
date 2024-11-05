@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
+  
+<style>
+ 
+
+  
+  html {
+
+            zoom:1.0
+
+        }
+    @font-face {
+        font-family: 'PingFang SC';
+        src: url('PingFang-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        -khtml-user-select: none;
+        user-select: none;
+    }
+    
+    *:not(input,
+    checkbox,
+    textarea) {
+        /*禁止文本选择*/
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+        /* Non-prefixed version, currently */
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .window {
+        width: 220px;
+        height: 500px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+        background-color: white;
+        font-family: 'PingFang SC', Helvetica, Arial, sans-serif;
+    }
+    
+    .title-bar {
+        position: relative;
+        height: 40px;
+        background-color: #eee;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        cursor: move;
+    }
+    
+    .title-bar .title {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 15px;
+        font-weight: bold;
+    }
+    
+    .title-bar .buttons {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .title-bar .button {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-right: 0px;
+    }
+    
+    .title-bar .close {
+        background-color: #ff5f56;
+    }
+    
+    .title-bar .minimize {
+        background-color: #ffbd2e;
+    }
+    
+    .title-bar .maximize {
+        background-color: #28c940;
+    }
+    
+    .content {
+        padding: 20px;
+        height: calc(100% - 40px);
+        overflow: auto;
+    }
+    
+    input[type=text] {
+        background-color: rgba(0, 0, 0, 0);
+        height: 25px;
+        width: 120px;
+    }
+    
+    input[type=range] {
+        background-color: rgba(0, 0, 0, 0);
+        width: 120px;
+    }
+    
+    .switch-btn {
+        width: 50px;
+        height: 25px;
+        position: relative;
+        top: 5px;
+        left: 0px;
+        border: 0px solid #dfdfdf;
+        background-color: #e9e9e9;
+        box-shadow: #dfdfdf 0 0 0 0 inset;
+        border-radius: 25px;
+        background-clip: content-box;
+        display: inline-block;
+        -webkit-appearance: none;
+        user-select: none;
+        outline: none;
+    }
+    
+    .switch-btn:before {
+        content: '';
+        width: 21px;
+        height: 21px;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        ;
+        border-radius: 20px;
+        background-color: white;
+        box-shadow: none;
+        border: 0;
+    }
+    
+    .switch-btn:checked {
+        border-color: #0080ff;
+        box-shadow: #0080ff 0 0 0 16px inset;
+        background-color: #0080ff;
+    }
+    
+    .switch-btn:checked:before {
+        left: 27px;
+    }
+    
+    .switch-btn.switch-btn-animbg {
+        transition: background-color ease .4s;
+    }
+    
+    .switch-btn.switch-btn-animbg:before {
+        transition: left .3s;
+    }
+    
+    .switch-btn.switch-btn-animbg:checked {
+        box-shadow: #dfdfdf 0 0 0 0 inset;
+        background-color: black;
+        transition: border-color .4s, background-color ease .4s;
+    }
+    
+    .switch-btn.switch-btn-animbg:checked:before {
+        transition: left .3s;
+    }
+    
+    .switch-btn-real {
+        width: 50px;
+        height: 25px;
+        position: relative;
+        top: 5px;
+        left: 0px;
+        border: 0px solid #dfdfdf;
+        background-color: #e9e9e9;
+        box-shadow: #dfdfdf 0 0 0 0 inset;
+        border-radius: 25px;
+        background-clip: content-box;
+        display: inline-block;
+        -webkit-appearance: none;
+        user-select: none;
+        outline: none;
+    }
+    
+    .title-text {
+        font-size: 18px;
+        font-weight: 10;
+    }
+    
+    .info-text {
+        font-size: 15px;
+        font-weight: 10;
+    }
+  
+  input[type=range] {
+
+  -webkit-appearance: none;
+
+}
+
+input[type=range]:focus {
+
+  outline: none;
+
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+
+  height: 20px;
+
+  cursor: pointer;
+
+  animate: 0.2s;
+
+  background: #D1D1D130;
+
+  border-radius: 1.3px;
+
+  border: 0.2px solid #010101;
+
+}
+
+input[type=range]::-webkit-slider-thumb {
+
+  border: 1px solid black;
+
+  height: 23px;
+
+  width: 16px;
+
+  border-radius: 3px;
+
+  background: #FFFFFFE0;
+
+  cursor: pointer;
+
+  -webkit-appearance: none;
+
+  margin-top: -2px;
+
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+
+  background: #367ebd;
+
+}
+
+
+
+</style>
+<div class="window" id="app">
+    <div class="title-bar">
+        <div class="buttons">
+            <div class="button close"></div>
+            <div class="button minimize"></div>
+            <div class="button maximize"></div>
+        </div>
+        <div class="title"> H5封包测试 </div>
+    </div>
+    <div class="content">
+        <p class="info-text">当前版本: 1.0</p>
+
+        <input class="switch-btn" onclick="startHook()" type="checkbox">拦截
+        <br>
+        <input class="switch-btn" onclick="sendData()" type="checkbox">发送
+
+        <!-- <button onclick="startHook()">开始拦截</button> -->
+        <div id="logArea" style="border:1px solid #ccc; height:500px; overflow-y:auto; margin-top:10px; padding:10px;">
+        </div>
+
+    </div>
+    
+    <script>
+
+ 
+    
+
+// 使用示例
+// var customData = [1, 2, 3, 4, 5]; // 你要发送的数据
+// sendCustomData(customData);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ h5gg.require(7.9); //设定最低需求的H5GG版本号//min version support for H5GG
+
+//将h5frida-15.1.24.dylib放到.app目录中 //put h5frida-15.1.24.dylib into .app folder of ipa
+var h5frida=h5gg.loadPlugin("h5frida", "h5frida-15.1.24.dylib");
+if(!h5frida) throw "加载h5frida插件失败\n\nFailed to load h5frida plugin";
+
+alert("h5frida插件版本="+h5frida.pluginVersion() + "\nfrida引擎版本="+h5frida.coreVersion()+"\n\n"
+      +"frida plugin version="+h5frida.pluginVersion() + "\nfrida core version="+h5frida.coreVersion());
+
+//优先调用集成的frida核心, 将frida-gadget的dylib和config两个文件放到.app目录中
+if(!h5frida.loadGadget("frida-gadget-15.1.24.dylib"))
+    throw "加载frida-gadget守护模块失败\n\nFailed to load frida-gadget daemon module";
+    
+var procs = h5frida.enumerate_processes();
+if(!procs || !procs.length) throw "frida无法获取进程列表\n\nfrida can't get process list";
+
+var pid = -1; //pid=-1, 使用自身进程来调用OC/C/C++函数, 也可以附加到其他APP进程来调用
+//Use its own process to call OC/C/C++ functions, or attach to other APP processes to call
+
+var found = false;
+for(var i=0;i<procs.length;i++) {
+    if(procs[i].pid==pid) {
+        if(procs[i].name!='Gadget') throw "免越狱测试请卸载frida-server的deb然后重启当前APP\nFor non-jailbreak tests, please uninstall the frida-server deb and restart the current APP";
+        found = true;
+    }
+}
+
+if(!found) throw "frida无法找到目标进程\n\nfrida cannot find the target process";
+
+var session = h5frida.attach(pid);
+if(!session) throw "frida附加进程失败\n\nfrida attach process failed";
+
+//监听frida目标进程连接状态, 比如异常退出
+session.on("detached", function(reason) {
+    alert("frida目标进程会话已终止(frida target process session terminated):\n"+reason);
+});
+
+var frida_script_line = frida_script("getline"); //safari console will auto add 2 line
+var frida_script_code = "("+frida_script.toString()+")()"; //将frida脚本转换成字符串
+var script = session.create_script(frida_script_code); //注入frida的js脚本代码
+
+if(!script) throw "frida注入脚本失败\n\nfrida inject script failed!";
+
+/*启动脚本前先设置frida脚本消息接收函数, 不要在frida脚本里发太多高频消息过来让h5gg弹出alert, 消息太多让alert阻塞在后台内存会爆导致闪退崩溃
+ Set the frida script message receiving function before starting the script,
+ Don't send too many high-frequency messages in the frida script to let h5gg show alerts,
+ because too many messages to alert will block h5frida in the background, and cause out-of-memory and crashes.
+ */
+
+script.on('message', function(msg) {
+
+    if(msg.type=='send' && msg.payload.type=='send_log') {
+        // 添加日志到页面
+        let logItem = document.createElement('div');
+        logItem.innerHTML = `
+            <p>Socket: ${msg.payload.data.sockfd}</p>
+            <p>长度: ${msg.payload.data.length}</p>
+            <pre>${msg.payload.data.content}</pre>
+            <hr>
+        `;
+        logArea.appendChild(logItem);
+        // 自动滚动到底部
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    if(msg.type=='error') {
+        script.unload(); //如果脚本发生错误就停止frida脚本
+        try {if(msg.fileName=="/frida_script.js") msg.lineNumber += frida_script_line-1;} catch(e) {}
+        if(Array.isArray(msg.info)) msg.info.map(function(item){ try { if(item.fileName=="/frida_script.js")
+            item.lineNumber += frida_script_line-1;} catch(e) {}; return item;});
+        var errmsg = JSON.stringify(msg,null,1).replace(/\/frida_script\.js\:(\d+)/gm,
+            function(m,c,o,a){return "/frida_script.js:"+(Number(c)+frida_script_line-1);});
+        alert("frida(脚本错误)script error:\n"+errmsg.replaceAll("\\n","\n"));
+    }
+    
+    if(msg.type=='send')
+        alert("frida(脚本消息)srcipt msg:\n"+JSON.stringify(msg.payload,null,1));
+    if(msg.type=='log')
+        alert("frida(脚本日志)script log:\n"+msg.payload);
+});
+
+if(!script.load()) throw "frida启动脚本失败\n\nfrida load script failed"; //启动脚本
+
+/**********************************************************************************/
+
+//获取frida脚本中的rpc.exports导出函数列表
+
+let logArea = document.getElementById('logArea');
+
+function startHook() {
+    script.call("hook_send");
+}
+
+
+
+
+
+
+
+// alert("frida脚本导出函数列表:\nfrida export method list:\n" + script.list_exports());
+
+// alert("HOOK拦截OC函数:\nHOOK Objective-C method:\n" + script.call("hook_objc"));
+
+// alert("测试HOOK拦截效果, 开始主动调用触发\nTest the HOOK interception effect and start to trigger");
+
+// var result1 = script.call("testcall_objc", ["https://ipapi.co/ip"]);
+// setTimeout(function(){
+//     alert("测试调用OC函数:\nTest invoke Objective-C method:\n" + result1);
+    
+//     //OC调用测试完之后再测试C/C++调用
+//     alert("HOOK拦截C/C++函数:\nHOOK API function:\n" + script.call("hook_API"));
+    
+//     alert("测试HOOK拦截效果, 开始主动调用触发\nTest the HOOK interception effect and start to trigger");
+
+//     var result2 = script.call("testcall_API", ["testfile.txt"]);
+//     setTimeout(function(){
+//         alert("测试调用C/C++函数:\nTest invoke API function\n" + result2);
+//     }, 200);
+    
+// }, 200);
+
+
+//script.unload(); //卸载脚本
+
+//session.detach(); //断开目标进程
+
+/***************************************************************/
+
+/*
+ 下面是frida的js脚本代码, 运行在目标进程, 不能在h5gg中直接调用这个js函数
+ frida的js脚本代码中不能使用任何h5gg的函数和变量, 也不能使用window对象
+ h5gg和frida只能通过console.log和send/recv/post还有rpc.exports进行通信
+
+ The following is the js script code of frida, which runs in the target process, and this js function cannot be called directly in h5gg
+ You cannot use any h5gg functions and variables in frida's js script code, nor can you use the window object
+ h5gg and frida can only communicate through console.log and send/recv/post and rpc.exports
+ */
+// function frida_script() { if(arguments.length) return new Error().line; //do not modify this line!!!
+
+//     //发送frida脚本的日志消息给h5gg
+//     console.log("frida脚本正在运行...\nfrida script is running...");
+
+    function frida_script() { if(arguments.length) return new Error().line;
+    console.log("frida脚本正在运行...\nfrida script is running...");
+    
+    // 添加hook_send实现
+    rpc.exports.hook_send = function() {
+    var send_func = h5frida.fishhook("send", 
+        "int",
+        ["int", "pointer", "size_t", "int"], 
+        function(sockfd, buf, len, flags) {
+            var data = buf.readByteArray(len);
+            // 发送数据到前端显示
+            send({
+                type: "send_log",
+                data: {
+                    sockfd: sockfd,
+                    length: len,
+                    content: hexdump(data)
+                }
+            });
+            return send_func(sockfd, buf, len, flags);
+        }
+    );
+    return "成功hook send函数";
+}
+
+}
+
+    
+
+    //执行到这里之后script.load()才会返回 //script.load() will return after execution here
+// }
+
+/***************************************************************/
+
+
+
+</script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        document.body.onselectstart = document.body.ondrag = function() {
+            return false;
+        }
+        $("input").blur(function() {
+            window.scroll(0, 0);
+        });
+      
+
+        document.body.addEventListener('touchstart', function() {});
+
+    })
+
+</script>
+            
